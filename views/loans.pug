@@ -1,0 +1,42 @@
+extends layout
+
+block content
+
+        h1 Loans
+        p
+        a.button(href='loans/new_loan') Create New Loan
+        p
+        | Filters 
+        a(href='/loans/?page=1') All
+        |  
+        a(href='overdue/?page=1') Overdue
+        |  
+        a(href='checkedout/?page=1') Checked Out
+        table
+            thead
+                tr
+                th Book
+                th Patron 
+                th Loaned on
+                th Return by 
+                th Returned on
+                th Action
+            tbody
+            for loan in loans
+                tr
+                td
+                    a(href='../books/details/' + loan.Book.id) #{loan.Book.title}
+                td
+                    a(href='../patrons/details/' + loan.Patron.id) #{loan.Patron.first_name}  #{loan.Patron.last_name}
+                td #{loan.loaned_on} 
+                td #{loan.return_by} 
+                td #{loan.returned_on} 
+                td
+                    a.button(href='/loans/return_book/' + loan.Book.id ) Return Book
+        ul(class="pagination") 
+                if pages > 1
+                    - for (var i=1; i<pages + 1; i++)
+                        if(i == page)
+                            a(class="selected" href="/loans/?page="+i)= i
+                        else
+                            a(class="pagination-link" href="/loans/?page="+i)= i

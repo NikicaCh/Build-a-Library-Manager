@@ -1,0 +1,35 @@
+extends layout
+
+block content
+            h1 Books
+            p
+            a.button(href='/books/new_book') Create New Book
+            p
+            | Filters 
+            a(href='/books/') All
+            |  
+            a(href='/books/overdue/?page=1') Overdue
+            |  
+            a(href='/books/checkedout/?page=1') Checked Out
+            table
+                thead
+                    tr
+                    th Title
+                    th Author
+                    th Genre
+                    th Year Released
+                tbody
+                for book in books
+                    tr
+                    td
+                        a(href="/books/details/" + book.id) #{book.title}
+                    td #{book.author}
+                    td #{book.genre}
+                    td #{book.first_published}
+            ul(class="pagination") 
+                if pages > 1
+                    - for (var i=1; i<pages + 1; i++)
+                        if(i == page)
+                            a(class="selected" href="/books/?page="+i)= i
+                        else
+                            a(class="pagination-link" href="/books/?page="+i)= i

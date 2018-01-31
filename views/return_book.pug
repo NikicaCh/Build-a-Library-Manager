@@ -1,0 +1,30 @@
+extends layout 
+
+block content
+  body
+    h1 Patron: Return Book
+    for loan in loans
+      if loan.returned_on == null
+        p
+          strong Book Title: 
+          | #{loan.Book.title}
+        p
+          strong Loaned By: 
+          | #{loan.Patron.first_name} #{loan.Patron.last_name}
+        p
+          strong Loaned On: 
+          | #{loan.loaned_on}
+        p
+          strong Return By: 
+          | #{loan.return_by}
+        form(method="POST",action="/loans/return_book/" +loan.book_id)
+          p
+            label(for='returned_on') Returned on:
+            input#returned_on(type='text', value= now, name="returned_on")
+          p
+            input(type='submit', value='Return Book')
+      else 
+        p
+          strong Book: 
+          | #{loan.Book.title}  
+          strong Already returned !
