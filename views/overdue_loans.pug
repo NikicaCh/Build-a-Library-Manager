@@ -31,7 +31,8 @@ block content
           td #{loan.loaned_on}
           td #{loan.return_by}   
           td #{loan.returned_on}
-            a.button(href='return_book/' + loan.Book.id) Return Book
+          td
+            a.button(href='/loans/return_book/' + loan.Book.id) Return Book
     ul(class="pagination") 
                 if pages > 1
                     - for (var i=1; i<pages + 1; i++)

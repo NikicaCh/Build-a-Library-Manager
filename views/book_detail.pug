@@ -4,15 +4,21 @@ block content
     for book in books
         h1 Book: #{book.title}
         form(method="POST" action="/books/details/" + book.id)
-            p
-                label(for='title') Title
+            p   
+                label(for='title') Title 
                 input#title(type='text', value=book.title name="title")
+                if(validation.title)
+                    p(class="validation")   Title is required
             p
                 label(for='author') Author
                 input#author(type='text', value=book.author name="author")
+                if(validation.author)
+                    p(class="validation")   Author is required
             p
                 label(for='genre') Genre
                 input#genre(type='text', value=book.genre name="genre")
+                if(validation.genre)
+                    p(class="validation")   Genre is required
             p
                 label(for='first_published') First Published
                 input#first_published(type='text', value=book.first_published name="first_published")

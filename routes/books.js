@@ -4,6 +4,12 @@ var router = express.Router();
 const {Book, Loan, Patron} = require('../models');
 let limit = 6,
     offset = 0;
+    
+let validationError = {
+    title: 0,
+    author: 0,
+    genre: 0
+}
 
 
 /* GET books listing. */
@@ -124,19 +130,35 @@ router.get('/details/:id', (request, response) => {
 
     Promise.all([book, loan])
     .then(result => {
-        response.render('book_detail', {books : result[0], loans: result[1] });
+        response.render('book_detail', {books : result[0], loans: result[1], validation: validationError });
     });
 });
 
 /* Update book details */
 router.post('/details/:id', (request, response) => {
+    validationError = {
+        title: 0,
+        author: 0,
+        genre: 0
+    }
+    if(request.body.title === "") {
+        validationError.title = 1;
+    }
+    if(request.body.author === "") {
+        validationError.author = 1;
+    }
+    if(request.body.genre === "") {
+        validationError.genre = 1;
+    }
     let id = request.params.id;
     Book.update( request.body, {
         where: {id: request.params.id}
     })
     .then(function(book){
         return response.redirect("/books/");
-  })
+    }).catch( (error) => {
+        response.redirect("/books/details/" + id);
+    });
 });
 
   

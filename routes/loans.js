@@ -8,6 +8,11 @@ let date = new Date()
     limit = 6,
     offset = 0;
 
+let validationError = {
+    loaned_on: 0,
+    return_by: 0
+}
+
 formatDate = (date) => {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -20,6 +25,8 @@ formatDate = (date) => {
     return [year, month, day].join('-');
 }
 let now = formatDate(date);
+let sevenDays = formatDate(date);
+console.log(sevenDays);
 
 /* GET loans listing. */
 router.get('/', function(req, res, next) {
@@ -96,7 +103,7 @@ router.get('/new_loan',(request, response) => {
     let books = Book.findAll();
     Promise.all([books, patrons])
     .then(result => {
-        response.render('new_loan', {books: result[0],patrons: result[1],title: 'Create new Loan', now: now});
+        response.render('new_loan', {books: result[0],patrons: result[1],title: 'Create new Loan', now: now, validation: validationError});
     });
 });
 
@@ -121,12 +128,22 @@ router.post('/return_book/:id', (request, response) => {
         where: {book_id: book_id}
     })
     .then( () => {
-        response.redirect("/loans");
+        response.redirect("/loans/?page=1");
     })
 });
 
 /* Create a new Loan */
 router.post('/', (request, response) => {
+    validationError = {
+        loaned_on: 0,
+        return_by: 0
+    }
+    if(request.body.loaned_on === "") {
+        validationError.loaned_on = 1;
+    }
+    if(request.body.return_by === "") {
+        validationError.return_by = 1;
+    }
     Loan.create({
         book_id: request.body.book_id,
         patron_id: request.body.patron_id,
@@ -135,16 +152,11 @@ router.post('/', (request, response) => {
         returned_on: null
     })
     .then(function() {
-        response.redirect('/loans');
-    }).catch(function(error){
-        if(error.name === "SequelizeValidationError") {
-          response.render('new_loan', {error: error})
-        } else {
-          throw error;
-        }
-    }).catch(function(error){
-        response.send(500, error);
-     });
+        response.redirect('/loans/?page=1');
+    })
+    .catch( () => {
+        response.redirect("/loans/new_loan");
+    })
 });
 
 

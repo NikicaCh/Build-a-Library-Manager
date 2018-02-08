@@ -17,8 +17,12 @@ block content
       p
         label(for='loaned_on') Loaned on:
         input#loaned_on( name="loaned_on" type='text', value= now)
+        if(validation.loaned_on)
+                    p(class="validation")   Loaned On field is required
       p
         label(for='return_by') Return by:
         input#return_by( name="return_by" type='text', value= now)
+        if(validation.return_by)
+                    p(class="validation")   Return By field is required
       p
         input(type='submit', value='Create New Loan')
